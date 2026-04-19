@@ -31,10 +31,16 @@ jobs:
         key: ${{ runner.os }}-cargo-${{ hashFiles('**/Cargo.lock') }}
     
     - name: Build APK
-      run: cargo run --release
+      run: |
+        cargo build --release --target aarch64-linux-android
+        # البحث عن APK
+        find . -name "*.apk" -type f
     
     - name: Upload APK
       uses: actions/upload-artifact@v4
       with:
         name: localdesktop-apk
-        path: localdesktop.apk
+        path: |
+          **/*.apk
+          target/aarch64-linux-android/release/*.apk
+        if-no-files-found: warn
